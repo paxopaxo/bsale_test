@@ -1,5 +1,5 @@
 const { Op } = require('sequelize')
-const Product = require("../../models/Products")
+const { Product } = require("../../models/relations")
 
 const getAllProducts = async (req, res) => {
     const { from = 0, show = 10 } = req.query

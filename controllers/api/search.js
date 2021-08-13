@@ -1,20 +1,27 @@
 const { Op } = require("sequelize")
-const Category = require("../../models/Categories")
-const Product = require("../../models/Products")
+const { Category, Product } = require("../../models/relations")
 
 const searchFunction = async (req, res) => {
     const { from = 0, show = 10 } = req.query
     const { options, exp } = req.params
 
-    const likeForm = `%${exp}%`
+    const likeForm = `%${exp.trim()}%`
 
     switch (options) {
         case "products":
             const product = await Product.findAll({
+                attributes: { exclude: ['category'] },
                 where: {
-                    name: {
-                        [Op.like]: likeForm,
-                    },
+                    [Op.or]: [
+                        { name: {
+                            [Op.like]: likeForm
+                        }},
+                        { id: Number(exp.trim()) || null }
+                    ]
+                },
+                include: {
+                    model: Category,
+                    as: "categoria",
                 },
                 offset: Number(from),
                 limit: Number(show),
@@ -26,33 +33,24 @@ const searchFunction = async (req, res) => {
         case "categories":
             const categories = await Category.findAll({
                 where: {
-                    name: {
-                        [Op.like]: likeForm,
-                    },
+                    [Op.or]: [
+                        { name: {
+                            [Op.like]: likeForm,
+                        }},
+                        { id: Number(exp.trim()) || null }
+                    ]
+                    ,
                 },
+
+
                 offset: Number(from),
                 limit: Number(show),
             })
             res.status(200).json({ categories })
             break
-        case "both":
 
-            const join = await Product.findAll({
-                include: {
-                    model: Category,
-                    as: "join",
-                    // where: {
-                    //     [Op.or] : [
-                    //         { [Op.like] : likeForm },
-                    //         { [Op.like] : likeForm }
-                    //     ]
-                    // },
-                    // required: false,
-                },
-            })
-
-            break
         default:
+            res.status(500).json('Server error')
             break
     }
 }

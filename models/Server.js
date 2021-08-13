@@ -1,9 +1,7 @@
 const express = require('express')
 const cors = require('cors')
-const path = require('path')
 
 const db = require( '../db/connection' )  
-const { setRelations } = require('../db/asociations')
 
 
 class Server {
