@@ -3,6 +3,7 @@ const cors = require('cors')
 const path = require('path')
 
 const db = require( '../db/connection' )  
+const { setRelations } = require('../db/asociations')
 
 
 class Server {
@@ -27,6 +28,7 @@ class Server {
     async connectionDB() {
         try {
             await db.authenticate()
+            // await setRelations()
             console.log("Database connection has been established successfully.")
         
         } catch (error) {
@@ -45,8 +47,8 @@ class Server {
         // Content
         this.app.use( this.paths.main , require('../routes/main') )
         // API
-        this.app.use('/api/categories', require('../routes/api/categories') )
         this.app.use('/api/products', require('../routes/api/products'))
+        this.app.use('/api/search', require('../routes/api/search'))
         // 404 handle error
         // this.app.get( '*', (req, res) => {
         //     res.sendFile( path.join(__dirname, '../public/index.html') )

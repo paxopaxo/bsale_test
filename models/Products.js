@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize')
 const db = require('../db/connection')
 
-const Product = db.define('Product', {
+const Product = db.define('product', {
     name: {
         type: DataTypes.STRING
     },
@@ -17,4 +17,9 @@ const Product = db.define('Product', {
     category: {
         type: DataTypes.NUMBER
     }
+}, {
+    freezeTableName: true,
+    timestamps: false
 })
+
+module.exports = Product
