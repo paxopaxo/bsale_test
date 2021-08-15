@@ -4,8 +4,8 @@ const path = require('path')
 
 const router = Router()
 
-router.get('/test', (req,res) => {
-    res.sendFile( path.join(__dirname,'../public/index.html' ) )
+router.get('/', (req,res) => {
+    res.redirect('/page1')
 })
 
 

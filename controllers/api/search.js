@@ -41,8 +41,6 @@ const searchFunction = async (req, res) => {
                     ]
                     ,
                 },
-
-
                 offset: Number(from),
                 limit: Number(show),
             })
@@ -50,7 +48,7 @@ const searchFunction = async (req, res) => {
             break
 
         default:
-            res.status(500).json('Server error')
+            res.status(500).json({err: 'Server error'})
             break
     }
 }

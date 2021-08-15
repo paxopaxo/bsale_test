@@ -11,7 +11,10 @@ class Server {
         this.paths = {
             main: '/'
         }
-        
+        this.apiPaths = {
+            products: '/api/products',
+            search: '/api/products'
+        }
 
         // db Connection
         this.connectionDB()
@@ -26,7 +29,6 @@ class Server {
     async connectionDB() {
         try {
             await db.authenticate()
-            // await setRelations()
             console.log("Database connection has been established successfully.")
         
         } catch (error) {
@@ -45,8 +47,8 @@ class Server {
         // Content
         this.app.use( this.paths.main , require('../routes/main') )
         // API
-        this.app.use('/api/products', require('../routes/api/products'))
-        this.app.use('/api/search', require('../routes/api/search'))
+        this.app.use( this.apiPaths.products , require('../routes/api/products'))
+        this.app.use( this.apiPaths.search , require('../routes/api/search'))
         // 404 handle error
         // this.app.get( '*', (req, res) => {
         //     res.sendFile( path.join(__dirname, '../public/index.html') )
