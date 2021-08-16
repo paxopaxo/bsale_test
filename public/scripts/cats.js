@@ -1,11 +1,12 @@
 const width = screen.availWidth
 const mainURL = location.origin 
 
-// Defining Params
+// Defining params
 const urlSearchParams = new URLSearchParams(window.location.search)
 let params = Object.fromEntries(urlSearchParams.entries())
 
 params.page = Number(params.page)
+params.cat = Number(params.cat)
 
 // References
 const catsID = [2,3,6,7,4,1,5]
@@ -18,7 +19,7 @@ const products = document.querySelector('.products')
 const previousPageBtn = document.querySelector('.footer button:nth-child(1)')
 const nextPageBtn = document.querySelector('.footer button:nth-child(2)')
 
-  
+
 const makePettition = (url, data, method = 'GET') => {
     return fetch(url, {
         method,
@@ -27,21 +28,27 @@ const makePettition = (url, data, method = 'GET') => {
             'Connection':'keep-alive'
         },
         body: JSON.stringify(data)
-    })  
+    })
 }
 
-// Redirections
+//Redirections function 
 const redirection = () => {
-    if( location.search === '' || params.page < 0 || Number.isNaN(params.page) ) {
-        location.replace(`${ mainURL }/?page=${ 0 }`)
+    
+    if( Number.isNaN(params.cat) || params.cat > 9 || params.cat < 0 ) {
+        location.replace( mainURL )
+        return true
+    }
+    
+    if( location.search === '' ||  Number.isNaN(params.page) || params.page < 0 ) {
+        location.replace(`${ mainURL }/cats?cat=${ params.cat }&page=${ 0 }`)
         return true
     }
     return false
 }
 
 const init = async() => {
-
-    const URL = `${mainURL}/api/products/discount?from=${ params.page*10 }`
+    
+    const URL = `${mainURL}/api/products/cat/${ params.cat }?from=${ params.page*10 }`
     const response = await makePettition( URL )
     const { product } = await response.json()
  
@@ -52,12 +59,12 @@ const init = async() => {
             const img = document.createElement('IMG')
             // Resolver error cuando url_image = null
             img.src = url_image || 'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-no-image-available-icon-flat.jpg'
-            const p = document.createElement('P')
+            const p = document.createElement('P') 
             p.innerHTML = name 
-            const p2 = document.createElement('p') 
+            const p2 = document.createElement('p')  
             p2.innerHTML = price + ' $'
             const p3 = document.createElement('p') 
-            p3.innerHTML = discount + '% OFF'
+            p3.innerHTML = discount ? discount + '% OFF' : ''
             div.appendChild(img)
             div.appendChild(p)
             div.appendChild(p2)
@@ -66,30 +73,33 @@ const init = async() => {
         })
         products.appendChild(fragment)
         return product
-    } 
-    window.location.replace(`${ mainURL }/404`)
+    }
+    location.replace(`${ mainURL }/404`)
+    throw new Error('Exit')
 
 }
 
-document.querySelector('.header-main h1').addEventListener('click',() => {
+
+document.querySelector('.header-main h1').addEventListener('click', () => {
     location.replace( mainURL )
 })
 
-if(width < 992 && !redirection()) { 
+if(width < 992 && !redirection() ) { 
     categories.style.display = 'none' 
 
     init()
     .then( response => {
         if( response.length === 10 ) {
             nextPageBtn.addEventListener('click', () => {
-                window.location.replace(`${ mainURL }/?page=${ params.page + 1 }`)
+                window.location.replace(`${ mainURL }/cats?cat=${ params.cat }&page=${ params.page + 1 }`)
             })
         } 
     })
+    .catch( () => {} )
 
     if( 0 < params.page ) {
         previousPageBtn.addEventListener('click', () => {
-            window.location.replace(`${ mainURL }/?page=${ params.page - 1 }`)
+            window.location.replace(`${ mainURL }/cats?cat=${ params.cat }&${ params.page - 1 }`)
         })
     }
  
@@ -105,30 +115,32 @@ if(width < 992 && !redirection()) {
 
     allItemsCategory.forEach( (cat, i) => {
         cat.addEventListener('click', () => {
-            window.location.replace(`${ mainURL }/cats?cat=${ catsID[i] }&page=0`)
+            window.location.replace(`${ mainURL }/cats?cat=${ catsID[i] }`)
         })
     })
 }
 else if( width >= 992 && !redirection() ) {
-    
+
     init()
     .then( response => {
         if( response.length === 10 ) {
             nextPageBtn.addEventListener('click', () => {
-                window.location.replace(`${ mainURL }/?page=${ params.page + 1 }`)
+                window.location.replace(`${ mainURL }/cats?cat=${ params.cat }&page=${ params.page + 1 }`)
             })
         } 
     })
+    .catch( () => {} )
+
     if( 0 < params.page ) {
         previousPageBtn.addEventListener('click', () => {
-            window.location.replace(`${ mainURL }/?page=${ params.page - 1 }`)
+            window.location.replace(`${ mainURL }/cats?cat=${ params.cat }&page=${ params.page - 1 }`)
         })
     }
 
+    
     allItemsCategory.forEach( (cat, i) => {
         cat.addEventListener('click', () => {
             window.location.replace(`${ mainURL }/cats?cat=${ catsID[i] }&page=0`)
         })
     })
-
 }
