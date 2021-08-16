@@ -11,7 +11,10 @@ params.cat = Number(params.cat)
 // References
 const catsID = [2,3,6,7,4,1,5]
 
-const icon = document.querySelector('.header-main svg')
+const form = document.querySelector('.header-main')
+const iconDrop = document.querySelector('.header-main .dropIcon')
+const inputText = document.querySelector('.header-main input')
+
 const categories = document.querySelector('.header-categories')
 const allItemsCategory = document.querySelectorAll('.header-categories li')
 const products = document.querySelector('.products')
@@ -33,7 +36,7 @@ const makePettition = (url, data, method = 'GET') => {
 
 //Redirections function 
 const redirection = () => {
-    
+
     if( Number.isNaN(params.cat) || params.cat > 9 || params.cat < 0 ) {
         location.replace( mainURL )
         return true
@@ -78,7 +81,7 @@ const init = async() => {
     throw new Error('Exit')
 
 }
-
+ 
 
 document.querySelector('.header-main h1').addEventListener('click', () => {
     location.replace( mainURL )
@@ -101,9 +104,9 @@ if(width < 992 && !redirection() ) {
         previousPageBtn.addEventListener('click', () => {
             window.location.replace(`${ mainURL }/cats?cat=${ params.cat }&${ params.page - 1 }`)
         })
-    }
+    } 
  
-    icon.addEventListener('touchend', () => {
+    iconDrop.addEventListener('touchend', () => {
         if( categories.style.display === 'none') {
             categories.classList.add( 'animate__animated','animate__slideInDown' )
             categories.style.display = 'block'
@@ -113,11 +116,11 @@ if(width < 992 && !redirection() ) {
         }
     })
 
-    allItemsCategory.forEach( (cat, i) => {
-        cat.addEventListener('click', () => {
-            window.location.replace(`${ mainURL }/cats?cat=${ catsID[i] }`)
-        })
-    })
+    // allItemsCategory.forEach( (cat, i) => {
+    //     cat.addEventListener('click', () => {
+    //         window.location.replace(`${ mainURL }/cats?cat=${ catsID[i] }`)
+    //     })
+    // })
 }
 else if( width >= 992 && !redirection() ) {
 
@@ -138,9 +141,17 @@ else if( width >= 992 && !redirection() ) {
     }
 
     
-    allItemsCategory.forEach( (cat, i) => {
-        cat.addEventListener('click', () => {
-            window.location.replace(`${ mainURL }/cats?cat=${ catsID[i] }&page=0`)
-        })
-    })
 }
+
+allItemsCategory.forEach( (cat, i) => {
+    cat.addEventListener('click', () => {
+        window.location.replace(`${ mainURL }/cats?cat=${ catsID[i] }&page=0`)
+    })
+})
+form.addEventListener('submit', e => {
+    e.preventDefault()
+    console.log( inputText.value )
+    if( inputText.value !== '' ) {
+        location.replace( `${ mainURL }/results?search_query=${ inputText.value }&page=0`)
+    }
+})

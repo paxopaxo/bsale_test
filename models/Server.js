@@ -1,9 +1,10 @@
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 
 const db = require( '../db/connection' )  
 
-
+ 
 class Server {
     constructor() {
         this.app = express()
@@ -13,20 +14,20 @@ class Server {
         }
         this.apiPaths = {
             products: '/api/products',
-            search: '/api/products'
+            search: '/api/search'
         }
 
         // db Connection
-        this.connectionDB()
+        this.connectionDB() 
         // Global middleweres
         this.middleweres()
-        // Routes
 
+        // Routes
         this.routes()
 
     }
 
-    async connectionDB() {
+    async connectionDB() { 
         try {
             await db.authenticate()
             console.log("Database connection has been established successfully.")
@@ -50,9 +51,9 @@ class Server {
         this.app.use( this.apiPaths.products , require('../routes/api/products'))
         this.app.use( this.apiPaths.search , require('../routes/api/search'))
         // 404 handle error
-        // this.app.get( '*', (req, res) => {
-        //     res.sendFile( path.join(__dirname, '../public/index.html') )
-        // })
+        this.app.get( '*', (req, res) => {
+            res.sendFile( path.join( __dirname, '../public/404.html') )
+        })
 
     }
 

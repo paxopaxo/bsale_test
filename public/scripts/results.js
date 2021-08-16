@@ -31,13 +31,18 @@ const makePettition = (url, data, method = 'GET') => {
             'Connection':'keep-alive'
         },
         body: JSON.stringify(data)
-    })  
+    })
 }
 
 // Redirections
 const redirection = () => {
-    if( location.search === '' || params.page < 0 || Number.isNaN(params.page) ) {
-        location.replace(`${ mainURL }/?page=${ 0 }`)
+
+    if( !location.search  || !params.search_query ) {
+        location.replace( mainURL )
+        return true
+    }
+    if(  Number.isNaN(params.page) || params.page < 0 ) {
+        location.replace(`${ mainURL }/results?search_query=${ params.search_query }&page=0`)
         return true
     }
     return false
@@ -45,11 +50,18 @@ const redirection = () => {
 
 const init = async() => {
 
-    const URL = `${mainURL}/api/products/discount?from=${ params.page*10 }`
+    const URL = `${mainURL}/api/search/products/${ params.search_query }?from=${ params.page*10 }`
     const response = await makePettition( URL )
     const { product } = await response.json()
  
     if( response.ok ) {
+
+        if( product.length === 0 ) {
+            const h2 = document.createElement('h2')
+            h2.innerText = 'No se han encontrado coincidencias...'
+            products.appendChild(h2)
+        }
+
         const fragment = document.createDocumentFragment()
         product.forEach( ({ name, url_image, price, discount }) => {
             const div = document.createElement('DIV')
@@ -68,16 +80,14 @@ const init = async() => {
             fragment.appendChild(div) 
         })
         products.appendChild(fragment)
+
         return product
-    } 
-    window.location.replace(`${ mainURL }/404`)
+    }
+    location.replace(`${ mainURL }/404`)
     throw new Error('Exit')
 
 }
 
-document.querySelector('.header-main h1').addEventListener('click',() => {
-    location.replace( mainURL )
-})
 
 const redirectionBoolean = redirection()
 
@@ -88,15 +98,16 @@ if(width < 992 && !redirectionBoolean) {
     .then( response => {
         if( response.length === 10 ) {
             nextPageBtn.addEventListener('click', () => {
-                window.location.replace(`${ mainURL }/?page=${ params.page + 1 }`)
+                window.location.replace(`${ mainURL }/results?search_query=${ params.search_query }&page=${ params.page + 1 }`)
             })
         }
     })
     .catch( () => {} )
 
+
     if( 0 < params.page ) {
         previousPageBtn.addEventListener('click', () => {
-            window.location.replace(`${ mainURL }/?page=${ params.page - 1 }`)
+            window.location.replace(`${ mainURL }/results?search_query=${ params.search_query }&page=${ params.page - 1 }`)
         })
     }
  
@@ -109,12 +120,6 @@ if(width < 992 && !redirectionBoolean) {
             categories.style.display = 'none'
         }
     })
-
-    // allItemsCategory.forEach( (cat, i) => {
-    //     cat.addEventListener('click', () => {
-    //         window.location.replace(`${ mainURL }/cats?cat=${ catsID[i] }&page=0`)
-    //     })
-    // })
 }
 else if( width >= 992 && !redirectionBoolean ) {
     
@@ -122,16 +127,20 @@ else if( width >= 992 && !redirectionBoolean ) {
     .then( response => {
         if( response.length === 10 ) {
             nextPageBtn.addEventListener('click', () => {
-                window.location.replace(`${ mainURL }/?page=${ params.page + 1 }`)
+                window.location.replace(`${ mainURL }/results?search_query=${ params.search_query }&page=${ params.page + 1 }`)
             })
         } 
     })
     if( 0 < params.page ) {
         previousPageBtn.addEventListener('click', () => {
-            window.location.replace(`${ mainURL }/?page=${ params.page - 1 }`)
+            window.location.replace(`${ mainURL }/results?search_query=${ params.search_query }&page=${ params.page - 1 }`)
         })
     }
 }
+
+document.querySelector('.header-main h1').addEventListener('click',() => {
+    location.replace( mainURL )
+})
 
 allItemsCategory.forEach( (cat, i) => {
     cat.addEventListener('click', () => {
