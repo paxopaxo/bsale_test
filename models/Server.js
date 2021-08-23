@@ -14,7 +14,8 @@ class Server {
         }
         this.apiPaths = {
             products: '/api/products',
-            search: '/api/search'
+            search: '/api/search',
+            categories: '/api/categories'
         }
 
         // db Connection
@@ -50,6 +51,7 @@ class Server {
         // API
         this.app.use( this.apiPaths.products , require('../routes/api/products'))
         this.app.use( this.apiPaths.search , require('../routes/api/search'))
+        this.app.use( this.apiPaths.categories, require('../routes/api/categories'))
         // 404 handle error
         this.app.get( '*', (req, res) => {
             res.sendFile( path.join( __dirname, '../public/404.html') )

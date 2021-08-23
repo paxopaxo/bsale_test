@@ -73,6 +73,7 @@ button, input[type="submit"], input[type="reset"] {
     .header-categories {
         z-index: 4;
         position: relative;
+        display:none;
         /* width: 100%; */
         list-style: none;
         border-top: 1px red solid;
@@ -146,6 +147,7 @@ button, input[type="submit"], input[type="reset"] {
         gap: 15px;
     }
     .footer button {
+        display:none;
         padding: 7px;
         background-color: whitesmoke;
     }
@@ -284,6 +286,7 @@ button, input[type="submit"], input[type="reset"] {
         gap: 15px;
     }
     .footer button {
+        display:none;
         padding: 7px;
         background-color: whitesmoke;
     }

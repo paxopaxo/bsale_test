@@ -1,10 +1,13 @@
 const { Op } = require('sequelize')
-const { Product } = require("../../models/relations")
+const { Product, Category } = require("../../models/relations")
 
 const getAllProducts = async (req, res) => {
     const { from = 0, show = 10 } = req.query
 
     const product = await Product.findAll({
+        attributes: {
+            exclude: ['id','category']
+        },
         offset: Number(from),
         limit: Number(show),
     })
@@ -14,11 +17,21 @@ const getAllProducts = async (req, res) => {
 const getAllByCategory = async (req, res) => {
 
     const { from = 0, show = 10 } = req.query
-    const { id } = req.params
+    const { cat } = req.params
     
     const product = await Product.findAll({
+        attributes: {
+            exclude: ['category','id']
+        },
+        include: {
+            model: Category,
+            as: "categoria",
+            attributes: {
+                exclude: ['id']
+            }
+        },
         where: {
-            category: Number(id)
+            '$categoria.name$': cat
         },
         offset: Number(from),
         limit: Number(show),
@@ -30,6 +43,9 @@ const getAllProductsWithDiscount = async(req, res) => {
     const { from = 0, show = 10 } = req.query
     
     const product = await Product.findAll({
+        attributes: {
+            exclude: ['id','category']
+        },
         where: {
             discount: {
                 [Op.gt]: 0,

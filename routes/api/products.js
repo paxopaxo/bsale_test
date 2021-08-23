@@ -15,14 +15,12 @@ router.get('/',[
     positiveNumber
 ], getAllProducts )
 
-router.get('/cat/:id',[
+router.get('/cat/:cat',[
     // MIDDLEWERE req.query.form and req.query.show Should be a number...(OPTIONAL)
     check('from','form param should be a integer number.').isInt().optional(),
     check('show','show param should be a number.').isInt().optional(),
     // MIDDLEWERE req.params.id must be a number...(MANDATORY)
-    check('id','id path variable is mandatory.').notEmpty(),
-    validarCampos,
-    check('id','id path variable should be a integer number.').isInt(),
+    check('cat','cat path variable is mandatory.').notEmpty(),
     validarCampos,
     positiveNumber
 ], getAllByCategory )

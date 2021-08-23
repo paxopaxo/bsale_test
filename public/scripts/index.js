@@ -45,9 +45,33 @@ const redirection = () => {
 
 const init = async() => {
 
-    const URL = `${mainURL}/api/products/discount?from=${ params.page*10 }`
-    const response = await makePettition( URL )
-    const { product } = await response.json()
+    const [catResponse, response ] = await Promise.all([
+        makePettition( `${ mainURL }/api/categories` ),
+        makePettition( `${mainURL}/api/products/discount?from=${ params.page*10 }` )
+    ])
+    const [jsonCatResponse, { product }] = await Promise.all([
+        catResponse.json(),
+        response.json()
+    ])
+
+    if( catResponse.ok ) {
+        const fragment = document.createDocumentFragment()
+        jsonCatResponse.forEach( ( catName ) => {
+            const li = document.createElement('LI')
+            li.innerHTML = catName
+            fragment.appendChild(li)
+        })
+        categories.appendChild(fragment)
+
+        document.querySelectorAll('.header-categories li').forEach( (cat) => {
+            cat.addEventListener('click', () => {
+                window.location.replace(`${ mainURL }/cats?cat=${ cat.innerHTML }&page=0`)
+            })
+        })
+    } else {
+        location.replace(`${ mainURL }/404`)
+        throw new Error('Exit')
+    }
  
     if( response.ok ) {
         const fragment = document.createDocumentFragment()
@@ -70,38 +94,16 @@ const init = async() => {
         products.appendChild(fragment)
         return product
     } 
-    window.location.replace(`${ mainURL }/404`)
+    location.replace(`${ mainURL }/404`)
     throw new Error('Exit')
-
 }
-
-document.querySelector('.header-main h1').addEventListener('click',() => {
-    location.replace( mainURL )
-})
 
 const redirectionBoolean = redirection()
 
-if(width < 992 && !redirectionBoolean) { 
-    categories.style.display = 'none' 
-
-    init()
-    .then( response => {
-        if( response.length === 10 ) {
-            nextPageBtn.addEventListener('click', () => {
-                window.location.replace(`${ mainURL }/?page=${ params.page + 1 }`)
-            })
-        }
-    })
-    .catch( () => {} )
-
-    if( 0 < params.page ) {
-        previousPageBtn.addEventListener('click', () => {
-            window.location.replace(`${ mainURL }/?page=${ params.page - 1 }`)
-        })
-    }
+if(width < 992 && !redirectionBoolean) {
  
     iconDrop.addEventListener('touchend', () => {
-        if( categories.style.display === 'none') {
+        if( categories.style.display === 'none' || categories.style.display === '' ) {
             categories.classList.add( 'animate__animated','animate__slideInDown' )
             categories.style.display = 'block'
         } else {
@@ -109,39 +111,44 @@ if(width < 992 && !redirectionBoolean) {
             categories.style.display = 'none'
         }
     })
-
-    // allItemsCategory.forEach( (cat, i) => {
-    //     cat.addEventListener('click', () => {
-    //         window.location.replace(`${ mainURL }/cats?cat=${ catsID[i] }&page=0`)
-    //     })
-    // })
 }
-else if( width >= 992 && !redirectionBoolean ) {
-    
+
+if( !redirectionBoolean ) {
+
     init()
     .then( response => {
         if( response.length === 10 ) {
+            nextPageBtn.style.display = 'block'
             nextPageBtn.addEventListener('click', () => {
                 window.location.replace(`${ mainURL }/?page=${ params.page + 1 }`)
             })
-        } 
-    })
+        }
+    }) 
+    
     if( 0 < params.page ) {
+        previousPageBtn.style.display = 'block'
         previousPageBtn.addEventListener('click', () => {
             window.location.replace(`${ mainURL }/?page=${ params.page - 1 }`)
         })
     }
+    
+    allItemsCategory.forEach( (cat, i) => {
+        cat.addEventListener('click', () => {
+            window.location.replace(`${ mainURL }/cats?cat=${ catsID[i] }&page=0`)
+        })
+    })
+    
+    form.addEventListener('submit', e => {
+        e.preventDefault()
+        if( inputText.value !== '' ) {
+            location.replace( `${ mainURL }/results?search_query=${ inputText.value }&page=0`)
+        }
+    })
+
+    document.querySelector('.header-main h1').addEventListener('click',() => {
+        location.replace( mainURL )
+    })
 }
 
-allItemsCategory.forEach( (cat, i) => {
-    cat.addEventListener('click', () => {
-        window.location.replace(`${ mainURL }/cats?cat=${ catsID[i] }&page=0`)
-    })
-})
 
-form.addEventListener('submit', e => {
-    e.preventDefault()
-    if( inputText.value !== '' ) {
-        location.replace( `${ mainURL }/results?search_query=${ inputText.value }&page=0`)
-    }
-})
+
