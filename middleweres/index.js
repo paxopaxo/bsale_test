@@ -1,9 +1,9 @@
 const { validarCampos } = require("./validarCampos");
-const { choicesMiddlewere } = require('./choicesMiddlewere');
+const { choicesMiddleware } = require('./choicesMiddleware');
 const { positiveNumber } = require("./positiveNumber");
 
 module.exports = {
     validarCampos,
-    choicesMiddlewere,
-    positiveNumber    
+    choicesMiddleware,
+    positiveNumber
 }

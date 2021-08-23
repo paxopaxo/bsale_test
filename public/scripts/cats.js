@@ -30,7 +30,7 @@ const makePettition = (url, data, method = 'GET') => {
     })
 }
 
-//Redirections function 
+// Function that checks if params given on link are correct, otherwise it will redirect to another page 
 const redirection = () => {
 
     if( params.cat > 9 || params.cat < 0 ) {
@@ -45,6 +45,7 @@ const redirection = () => {
     return false
 }
 
+// Function used to solicit data from server and make an initial render
 const init = async() => {
     const [catResponse, response ] = await Promise.all([
         makePettition( `${ mainURL }/api/categories` ),
@@ -103,7 +104,7 @@ const init = async() => {
 const redirectionBoolean = redirection()
 
 if(width < 992 && !redirectionBoolean ) { 
- 
+    // Show categories button
     iconDrop.addEventListener('touchend', () => {
         if( categories.style.display === 'none' || categories.style.display === '' ) {
             categories.classList.add( 'animate__animated','animate__slideInDown' )
@@ -136,14 +137,15 @@ if( !redirectionBoolean ) {
         })
     }
 
+    // Search 
     form.addEventListener('submit', e => {
         e.preventDefault()
-        console.log( inputText.value )
         if( inputText.value !== '' ) {
             location.replace( `${ mainURL }/results?search_query=${ inputText.value }&page=0`)
         }
     })
 
+    // Go to main page
     document.querySelector('.header-main h1').addEventListener('click', () => {
         location.replace( mainURL )
     })

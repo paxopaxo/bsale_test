@@ -9,8 +9,9 @@ const searchFunction = async (req, res) => {
 
     switch (options) {
         case "products":
+            // Search on DB
             const product = await Product.findAll({
-                attributes: { exclude: ['category'] },
+                attributes: { exclude: ['category','id'] },
                 where: {
                     [Op.or]: [
                         { name: {
@@ -22,6 +23,9 @@ const searchFunction = async (req, res) => {
                 include: {
                     model: Category,
                     as: "categoria",
+                    attributes: {
+                        exclude: ['id']
+                    }
                 },
                 offset: Number(from),
                 limit: Number(show),
@@ -31,7 +35,10 @@ const searchFunction = async (req, res) => {
 
             break
         case "categories":
+
+            // Search on DB
             const categories = await Category.findAll({
+                attributes: { exclude: ['id'] },
                 where: {
                     [Op.or]: [
                         { name: {

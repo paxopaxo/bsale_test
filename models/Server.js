@@ -21,7 +21,7 @@ class Server {
         // db Connection
         this.connectionDB() 
         // Global middleweres
-        this.middleweres()
+        this.middlewares()
 
         // Routes
         this.routes()
@@ -38,7 +38,7 @@ class Server {
         }
     }
 
-    middleweres() {
+    middlewares() {
         this.app.use( cors() )
         this.app.use(express.json())
         this.app.use(express.static('public'))

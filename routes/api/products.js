@@ -7,6 +7,8 @@ const { validarCampos, positiveNumber } = require('../../middleweres')
 
 const router = Router()
 
+// Get all products
+
 router.get('/',[
     // MIDDLEWERE req.query.form and req.query.show Should be a number...(OPTIONAL)
     check('from','form param should be a integer number.').isInt().optional(),
@@ -14,6 +16,8 @@ router.get('/',[
     validarCampos,
     positiveNumber
 ], getAllProducts )
+
+// Gets a category filtered by its name
 
 router.get('/cat/:cat',[
     // MIDDLEWERE req.query.form and req.query.show Should be a number...(OPTIONAL)
@@ -24,6 +28,8 @@ router.get('/cat/:cat',[
     validarCampos,
     positiveNumber
 ], getAllByCategory )
+
+// Get all categories which are actually on discount
 
 router.get('/discount',[
     // MIDDLEWERE req.query.form and req.query.show Should be a number...(OPTIONAL)

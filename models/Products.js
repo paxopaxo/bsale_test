@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize')
 const db = require('../db/connection')
 
+// Defining product table
+
 const Product = db.define('product', {
     name: {
         type: DataTypes.STRING

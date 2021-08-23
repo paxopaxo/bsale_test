@@ -7,8 +7,6 @@ let params = Object.fromEntries(urlSearchParams.entries())
 
 params.page = Number(params.page)
 
-// References
-const catsID = [2,3,6,7,4,1,5]
 
 const form = document.querySelector('.header-main')
 const iconDrop = document.querySelector('.header-main .dropIcon')
@@ -33,7 +31,7 @@ const makePettition = (url, data, method = 'GET') => {
     })
 }
 
-// Redirections
+// Function that checks if params given on link are correct, otherwise it will redirect to another page 
 const redirection = () => {
 
     if( !location.search  || !params.search_query ) {
@@ -46,7 +44,7 @@ const redirection = () => {
     }
     return false
 }
-
+// Function used to solicit data from server and make an initial render
 const init = async() => {
 
     const [catResponse, response ] = await Promise.all([
@@ -115,7 +113,7 @@ const init = async() => {
 const redirectionBoolean = redirection()
 
 if(width < 992 && !redirectionBoolean) { 
- 
+    // Show categories button
     iconDrop.addEventListener('touchend', () => {
         if( categories.style.display === 'none' || categories.style.display === '' ) {
             categories.classList.add( 'animate__animated','animate__slideInDown' )
@@ -148,16 +146,18 @@ if( !redirectionBoolean ) {
             window.location.replace(`${ mainURL }/results?search_query=${ params.search_query }&page=${ params.page - 1 }`)
         })
     }
-
-    document.querySelector('.header-main h1').addEventListener('click',() => {
-        location.replace( mainURL )
-    })
     
+    // Search 
     form.addEventListener('submit', e => {
         e.preventDefault()
         if( inputText.value !== '' ) {
             location.replace( `${ mainURL }/results?search_query=${ inputText.value }&page=0`)
         }
+    })
+    
+    // Go to main page
+    document.querySelector('.header-main h1').addEventListener('click',() => {
+        location.replace( mainURL )
     })
 }
 

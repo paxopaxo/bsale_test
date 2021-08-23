@@ -1,9 +1,11 @@
 const { Router } = require('express')
 const { check } = require('express-validator')
 const { searchFunction } = require('../../controllers/api/search')
-const { validarCampos, choicesMiddlewere, positiveNumber } = require('../../middleweres')
+const { validarCampos, choicesMiddleware, positiveNumber } = require('../../middleweres')
 
 const router = Router()
+
+// Search an expression either in categories or products
 
 router.get('/:options/:exp',[
     // MIDDLEWERE req.query.form and req.query.show Should be a number... (OPTIONAL)
@@ -16,7 +18,7 @@ router.get('/:options/:exp',[
     validarCampos,
     check('options','options path variable should be a string.').isString(),
     validarCampos,
-    choicesMiddlewere,
+    choicesMiddleware,
     positiveNumber
 ], searchFunction )
 

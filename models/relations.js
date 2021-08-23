@@ -1,6 +1,8 @@
 const Category = require("./Categories")
 const Product = require("./Products")
 
+// Defining relationships between different tables
+
 Category.hasMany(Product, {
     foreignKey: "category",
     as: "Rel",

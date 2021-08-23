@@ -1,4 +1,7 @@
-const choicesMiddlewere = (req, res, next) => {
+
+// Middleware used to check if the user introduced one of the 2 allowed parameters 
+
+const choicesMiddleware = (req, res, next) => {
     const availableOptions = ['categories','products']
     const { options } = req.params
     const trimOptions = options.trim().toLowerCase()
@@ -12,4 +15,4 @@ const choicesMiddlewere = (req, res, next) => {
 
 }
 
-module.exports =  { choicesMiddlewere }
+module.exports =  { choicesMiddleware }
